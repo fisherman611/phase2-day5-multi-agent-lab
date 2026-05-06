@@ -74,6 +74,7 @@ NVIDIA_BASE_URL=https://integrate.api.nvidia.com/v1
 # optional
 LANGSMITH_API_KEY=...
 LANGSMITH_TRACING=true
+LANGSMITH_ENDPOINT=https://api.smith.langchain.com
 TAVILY_API_KEY=...
 ```
 

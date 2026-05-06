@@ -8,6 +8,7 @@ from contextvars import ContextVar, Token
 from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import UTC, datetime
+import logging
 from time import perf_counter
 from typing import Any
 from uuid import UUID, uuid4
@@ -18,6 +19,7 @@ _CURRENT_LANGSMITH_RUN_ID: ContextVar[UUID | None] = ContextVar(
     "current_langsmith_run_id",
     default=None,
 )
+logger = logging.getLogger(__name__)
 
 
 def _get_langsmith_client() -> Any | None:
@@ -27,8 +29,12 @@ def _get_langsmith_client() -> Any | None:
     try:
         from langsmith import Client
     except ImportError:
+        logger.warning("LangSmith tracing enabled but `langsmith` package is not installed.")
         return None
-    return Client(api_key=settings.langsmith_api_key)
+    return Client(
+        api_key=settings.langsmith_api_key,
+        api_url=settings.langsmith_endpoint,
+    )
 
 
 @contextmanager
@@ -69,7 +75,8 @@ def trace_span(name: str, attributes: dict[str, Any] | None = None) -> Iterator[
                 **create_kwargs,
             )
             run_token = _CURRENT_LANGSMITH_RUN_ID.set(run_id)
-        except Exception:
+        except Exception as exc:
+            logger.warning("LangSmith create_run failed for span `%s`: %s", name, exc)
             client = None
             run_id = None
 
@@ -96,7 +103,7 @@ def trace_span(name: str, attributes: dict[str, Any] | None = None) -> Iterator[
                     error=span["error"],
                     outputs=outputs,
                 )
-            except Exception:
-                pass
+            except Exception as exc:
+                logger.warning("LangSmith update_run failed for span `%s`: %s", name, exc)
         if run_token is not None:
             _CURRENT_LANGSMITH_RUN_ID.reset(run_token)

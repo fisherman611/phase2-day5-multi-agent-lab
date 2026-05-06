@@ -29,6 +29,10 @@ class Settings(BaseSettings):
 
     langsmith_api_key: str | None = Field(default=None, validation_alias="LANGSMITH_API_KEY")
     langsmith_tracing: bool = Field(default=False, validation_alias="LANGSMITH_TRACING")
+    langsmith_endpoint: str = Field(
+        default="https://api.smith.langchain.com",
+        validation_alias="LANGSMITH_ENDPOINT",
+    )
     langsmith_project: str = Field(
         default="multi-agent-research-lab",
         validation_alias="LANGSMITH_PROJECT",
