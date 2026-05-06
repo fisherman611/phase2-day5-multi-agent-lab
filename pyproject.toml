@@ -21,7 +21,7 @@ dependencies = [
 
 [project.optional-dependencies]
 llm = [
-  "openai>=1.40",
+  "langchain-nvidia-ai-endpoints>=0.3",
   "langgraph>=0.2",
   "langchain-core>=0.2",
   "langsmith>=0.1"

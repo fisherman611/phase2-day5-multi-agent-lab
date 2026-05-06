@@ -59,7 +59,7 @@ Trace + Benchmark Report
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\\Scripts\\activate
-pip install -e "[dev]"
+pip install -e "[dev,llm]"
 cp .env.example .env
 ```
 
@@ -68,7 +68,9 @@ cp .env.example .env
 Mở `.env` và điền key cần thiết.
 
 ```bash
-OPENAI_API_KEY=...
+NVIDIA_API_KEY=...
+NVIDIA_MODEL=meta/llama-3.1-8b-instruct
+NVIDIA_BASE_URL=https://integrate.api.nvidia.com/v1
 # optional
 LANGSMITH_API_KEY=...
 TAVILY_API_KEY=...
